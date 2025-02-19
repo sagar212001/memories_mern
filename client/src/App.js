@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import { Grid2, Grow, AppBar, Container, Typography } from '@mui/material'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edi <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container maxWidth="lg">
+      <AppBar position='static' color='inherit'>
+        <Typography variant='h2' align='center'>
+          Memories
+        </Typography>
+
+      </AppBar>
+
+    </Container>
+  )
 }
 
 export default App;
