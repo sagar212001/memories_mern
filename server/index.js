@@ -6,13 +6,15 @@ import postRoutes from './routes/posts.js'
 
 const app = express()
 
-app.use('/posts', postRoutes)
 
 app.use(bodyParser.json({ limit : "30mb", extended : true}))
 app.use(bodyParser.urlencoded({ limit : "30mb", extended : true}))
 app.use(cors())
 
-const CONNECTION_URL  = 'abc'
+app.use('/posts', postRoutes)
+
+
+const CONNECTION_URL  = 'mongodb+srv://hemasagar_memories:qwertasdfgh@cluster0.uvv1y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 const PORT = process.env.PORT || 5000
 
