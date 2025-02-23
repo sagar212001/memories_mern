@@ -1,7 +1,7 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import base64 from 'base64-encode-file'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../../actions/posts';
 
 const Forms = () => {
@@ -9,7 +9,7 @@ const Forms = () => {
   const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
-    creator: '',
+    creators: '',
     title: '',
     message: '',
     tags: '',
@@ -17,20 +17,29 @@ const Forms = () => {
   });
 
   const [error, setError] = useState('');
+  const [currentId, setCurrentId] = useState(null);
+  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
 
   useEffect(() =>{
-    console.log('formData???', formData);
-    
+    if(post)
+    {
+      setFormData(data)
+    }
 
-  },[formData])
+  },[post])
 
   // Handle input changes
   const handleChange = (e) => {
+    const value = e.target.name === 'tags' ? e.target.value.split(',') : e.target.value
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     });
   };
+
+  const fileInputRef = useRef(null);
+
 
   // Handle file input change
   const handleFileChange = async (e) => {
@@ -47,7 +56,7 @@ const Forms = () => {
     e.preventDefault();
 
     // Simple form validation
-    if (!formData.creator || !formData.title || !formData.message || !formData.tags || !formData.selectedFile) {
+    if (!formData.creators || !formData.title || !formData.message || !formData.tags || !formData.selectedFile) {
       setError('All fields are required!');
       return;
     }
@@ -55,19 +64,22 @@ const Forms = () => {
     setError('');
     
     dispatch(createPost(formData))
+    handleClear()
   };
 
   // Clear the form fields
   const handleClear = () => {
     setFormData({
-      creator: '',
+      creators: '',
       title: '',
       message: '',
       tags: '',
       selectedFile: null,
     });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // Manually clear the file input
+    }
     setError('');
-    window.location.reload()
   };
 
   return (
@@ -81,8 +93,8 @@ const Forms = () => {
           fullWidth
           label="Creator"
           variant="outlined"
-          name="creator"
-          value={formData.creator}
+          name="creators"
+          value={formData.creators}
           onChange={handleChange}
           margin="normal"
           sx={{
@@ -140,7 +152,7 @@ const Forms = () => {
         />
 
         <div>
-            <input type="file" name="file" onChange={handleFileChange}/>  
+            <input type="file" name="file" onChange={handleFileChange} ref={fileInputRef} />  
         </div>
 
         {error && (

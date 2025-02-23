@@ -1,37 +1,35 @@
 import React, { useEffect } from 'react'
-import { Grow, Grid2, AppBar, Container, Typography } from '@mui/material'
+import { Grow, Grid2, Container } from '@mui/material'
 import Posts from './components/Posts/Posts'
 import Forms from './components/Form/Forms'
-import useStyles from './styles'
+import { AppBar, Heading } from './styles'
 import { useDispatch } from 'react-redux'
 
 import { getPosts } from './actions/posts'
 
 const App = () => {
-  const classes = useStyles();
-
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getPosts())
-  })
+  }, [ dispatch ])
 
 
   return (
-    <Container maxWidth="lg">
-      <AppBar className={classes.appBar} position='static' color='inherit'>
-        <Typography className={classes.heading} variant='h4' align='center'>
+    <Container maxWidth="xl">
+      <AppBar position='static' color='inherit'>
+        <Heading variant='h4' align='center'>
           Memories
-        </Typography>
+        </Heading>
       </AppBar>
       <Grow in>
         <Container>
-          <Grid2 container justifyContent="space-between" alignItems="stretch" spacing={3}>
+          <Grid2 container justify="space-between" alignItems="stretch" spacing={3}>
             <Grid2 item xs={12} sm={7}>
-              <Posts />
+              <Posts/>
             </Grid2>
             <Grid2 item xs={12} sm={4}>
-              <Forms />
+              <Forms/>
             </Grid2>
           </Grid2>
         </Container>
