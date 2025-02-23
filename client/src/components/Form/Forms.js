@@ -23,7 +23,7 @@ const Forms = () => {
   useEffect(() =>{
     if(post)
     {
-      setFormData(data)
+      setFormData(post)
     }
 
   },[post])
