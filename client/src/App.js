@@ -1,40 +1,27 @@
-import React, { useEffect } from 'react'
-import { Grow, Grid2, Container } from '@mui/material'
-import Posts from './components/Posts/Posts'
-import Forms from './components/Form/Forms'
-import { AppBar, Heading } from './styles'
-import { useDispatch } from 'react-redux'
-
-import { getPosts } from './actions/posts'
+import React from 'react'
+import { Container } from '@mui/material'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import NavBar from './components/NavBar/NavBar'
+import Home from './components/Home/Home'
+import Auth from './components/Auth/Auth'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 const App = () => {
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getPosts())
-  }, [ dispatch ])
-
 
   return (
-    <Container maxWidth="xl">
-      <AppBar position='static' color='inherit'>
-        <Heading variant='h4' align='center'>
-          Memories
-        </Heading>
-      </AppBar>
-      <Grow in>
-        <Container>
-          <Grid2 container justify="space-between" alignItems="stretch" spacing={3}>
-            <Grid2 item xs={12} sm={7}>
-              <Posts/>
-            </Grid2>
-            <Grid2 item xs={12} sm={4}>
-              <Forms/>
-            </Grid2>
-          </Grid2>
+    <GoogleOAuthProvider clientId={process.env.CLIENT_ID}>
+      <BrowserRouter>
+        <Container maxWidth="xl">
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/auth" element={<Auth />} />
+          </Routes>
         </Container>
-      </Grow>
-    </Container>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
+    
+    
   )
 }
 

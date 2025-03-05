@@ -9,7 +9,6 @@ const Forms = () => {
   const dispatch = useDispatch()
 
   const [formData, setFormData] = useState({
-    creators: '',
     title: '',
     message: '',
     tags: '',
@@ -19,6 +18,7 @@ const Forms = () => {
   const [error, setError] = useState('');
   const [currentId, setCurrentId] = useState(null);
   const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
+  const user = JSON.parse(localStorage.getItem('profile'))
 
   useEffect(() =>{
     if(post)
@@ -38,7 +38,7 @@ const Forms = () => {
     });
   };
 
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null) || {};
 
 
   // Handle file input change
@@ -56,21 +56,20 @@ const Forms = () => {
     e.preventDefault();
 
     // Simple form validation
-    if (!formData.creators || !formData.title || !formData.message || !formData.tags || !formData.selectedFile) {
+    if (!formData.title || !formData.message || !formData.tags || !formData.selectedFile) {
       setError('All fields are required!');
       return;
     }
 
     setError('');
     
-    dispatch(createPost(formData))
+    dispatch(createPost({ ...formData, name : user?.result?.name }))
     handleClear()
   };
 
   // Clear the form fields
   const handleClear = () => {
     setFormData({
-      creators: '',
       title: '',
       message: '',
       tags: '',
@@ -89,21 +88,6 @@ const Forms = () => {
       </Typography>
 
       <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Creator"
-          variant="outlined"
-          name="creators"
-          value={formData.creators}
-          onChange={handleChange}
-          margin="normal"
-          sx={{
-            marginBottom: 2,
-            '& .MuiInputBase-root': { fontSize: '0.875rem' },
-          }}
-          size="small"
-        />
-
         <TextField
           fullWidth
           label="Title"

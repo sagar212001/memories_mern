@@ -9,9 +9,9 @@ import { deletePost, likePost } from '../../../actions/posts';
 const Post = ({ post }) => {
   const dispatch = useDispatch() 
 
-  const { title, message, creators, tags, selectedFile, likeCount, createdAt, _id } = post;
-
-  const [ liked, setLiked ] = useState(false)
+  const { title, message, creator, tags, selectedFile, likes, createdAt, _id, name } = post;
+  const user  = JSON.parse(localStorage.getItem('profile'))
+  
 
   const onDelete = () => {
     dispatch(deletePost(_id))
@@ -23,8 +23,7 @@ const Post = ({ post }) => {
 
   const postLike = () => {
 
-    dispatch(likePost(_id, {'liked' : !liked}))
-    setLiked(!liked)
+    dispatch(likePost(_id, {'liked' : true}))
 
   }
 
@@ -36,13 +35,19 @@ const Post = ({ post }) => {
             {title}
           </Typography>
 
-          <IconButton onClick={onEdit} edge="end">
-            <EditIcon />
-          </IconButton>
+          { user?.result?._id === creator && 
+          
+          <>
+            <IconButton onClick={onEdit} edge="end">
+              <EditIcon />
+            </IconButton>
 
-          <IconButton onClick={onDelete} edge="end">
-            <DeleteIcon color="error" />
-          </IconButton>
+            <IconButton onClick={onDelete} edge="end">
+              <DeleteIcon color="error" />
+            </IconButton>
+          </>}
+
+          
         </Box>
 
         {/* Post Message */}
@@ -56,7 +61,7 @@ const Post = ({ post }) => {
             <strong>Creators:</strong>
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {creators}
+            {name}
           </Typography>
         </Box>
 
@@ -89,13 +94,13 @@ const Post = ({ post }) => {
         <Box display="flex" alignItems="center" mb={2}>
           <IconButton 
             onClick={postLike} 
-            color={liked ? 'primary' : 'default'} 
+            color={likes?.includes(user?.result?._id) ? 'primary' : 'default'} 
             sx={{ marginRight: 1 }}  // Add some spacing between buttons
           >
           <ThumbUp sx={{ marginRight: 1 }} />
           </IconButton>
           <Typography variant="body2" color="text.secondary">
-            {likeCount} Likes
+            {likes?.length} Likes
           </Typography>
         </Box>
 
