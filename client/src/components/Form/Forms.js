@@ -2,24 +2,27 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import base64 from 'base64-encode-file'
 import { useDispatch, useSelector } from 'react-redux';
-import { createPost } from '../../actions/posts';
+import { createPost, updatedPostIndex, updatePost } from '../../actions/posts';
 
 const Forms = () => {
 
   const dispatch = useDispatch()
 
-  const [formData, setFormData] = useState({
+  const INITIAL_DATA = {
     title: '',
     message: '',
     tags: '',
     selectedFile: null,
-  });
+  }
+
+  const [formData, setFormData] = useState(INITIAL_DATA);
 
   const [error, setError] = useState('');
   const [currentId, setCurrentId] = useState(null);
-  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null)
+  const post = useSelector((state) => currentId ? state.posts.posts.find((p) => p._id === currentId) : null)
+  const updateIndex = useSelector((state) => state?.posts?.updateIndex)
   const user = JSON.parse(localStorage.getItem('profile'))
-
+  
   useEffect(() =>{
     if(post)
     {
@@ -27,6 +30,15 @@ const Forms = () => {
     }
 
   },[post])
+  
+  useEffect(() => {
+    if(updateIndex){
+      setCurrentId(updateIndex)
+    }else{
+      setCurrentId(updateIndex)
+      setFormData(INITIAL_DATA)
+    }
+  }, [ updateIndex ])
 
   // Handle input changes
   const handleChange = (e) => {
@@ -63,28 +75,26 @@ const Forms = () => {
 
     setError('');
     
-    dispatch(createPost({ ...formData, name : user?.result?.name }))
+    updateIndex ? dispatch(updatePost(updateIndex, formData)) : dispatch(createPost({ ...formData, name : user?.result?.name }))
     handleClear()
   };
 
   // Clear the form fields
   const handleClear = () => {
-    setFormData({
-      title: '',
-      message: '',
-      tags: '',
-      selectedFile: null,
-    });
+    setFormData(INITIAL_DATA);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''; // Manually clear the file input
+      fileInputRef.current.value = '';
     }
     setError('');
+    if(updateIndex){
+      dispatch(updatedPostIndex(null))
+    }
   };
 
   return (
     <Box sx={{ maxWidth: 500, margin: '0 auto', padding: 2 }}>
       <Typography variant="h5" sx={{ fontSize: '1.2rem', marginBottom: 2 }}>
-        Posting a memory
+        {updateIndex ? 'Editing A memory' : 'Posting a memory' }
       </Typography>
 
       <form onSubmit={handleSubmit}>
@@ -150,7 +160,7 @@ const Forms = () => {
             type="button"
             variant="outlined"
             color="secondary"
-            onClick={handleClear}
+            onClick={() => handleClear()}
             sx={{ fontSize: '0.875rem' }}
           >
             Clear
@@ -161,7 +171,7 @@ const Forms = () => {
             color="primary"
             sx={{ fontSize: '0.875rem' }}
           >
-            Submit
+            {updateIndex ? 'Edit' : 'Submit' }
           </Button>
         </Box>
       </form>

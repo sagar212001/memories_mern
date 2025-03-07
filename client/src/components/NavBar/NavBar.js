@@ -17,7 +17,7 @@ const NavBar= () => {
 
     setUser(JSON.parse(localStorage.getItem('profile')))
 
-  },[ location, user ])
+  },[ location, user?.length ])
 
   const onHandleLogout = () => {
     dispatch({ type: 'LOGOUT' })

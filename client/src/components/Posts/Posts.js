@@ -1,13 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Grid2, CircularProgress } from '@mui/material';
 import Post from './Post/Post'
 import { useSelector } from 'react-redux'
 
 const Posts = () => {
 
-  const posts = useSelector((state) => state.posts)
+  const posts = useSelector((state) => state.posts.posts)
+  const updateIndex = useSelector((state) => state.posts.updateIndex)
+  
+  useEffect(() => {
+    console.log('updateIndex IN POSTS',updateIndex)
+  
+  }, [updateIndex])
+  
 
-  console.log('posts???', posts)
+  console.log(posts);
+  
 
   return (
     !posts.length 

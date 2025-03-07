@@ -61,3 +61,12 @@ export const likePost = (id , liked) => async(dispatch) => {
         console.log(error.message)
     }
 }
+
+export const updatedPostIndex = id => async(dispatch) => {
+    try {
+        dispatch({ type : 'EDIT_POST_INDEX', payload : id })
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}

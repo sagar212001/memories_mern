@@ -1,24 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, Typography, Chip, Link, Box, IconButton, CardMedia } from '@mui/material';
 import { ThumbUp } from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { useDispatch } from 'react-redux';
-import { deletePost, likePost } from '../../../actions/posts';
+import { useDispatch, useSelector } from 'react-redux';
+import { deletePost, likePost, updatedPostIndex } from '../../../actions/posts';
 
 const Post = ({ post }) => {
   const dispatch = useDispatch() 
 
   const { title, message, creator, tags, selectedFile, likes, createdAt, _id, name } = post;
   const user  = JSON.parse(localStorage.getItem('profile'))
+  const updateIndex = useSelector((state) => state.posts.updateIndex)
   
 
   const onDelete = () => {
     dispatch(deletePost(_id))
   }
 
-  const onEdit = () => {
-    console.log('12345')
+  const onEdit = id => {
+    updateIndex !== id ? dispatch(updatedPostIndex(id)) : dispatch(updatedPostIndex(null))
   }
 
   const postLike = () => {
@@ -28,7 +29,8 @@ const Post = ({ post }) => {
   }
 
   return (
-    <Card sx={{ maxWidth: 600, margin: '20px auto' }}>
+    <Card sx={{ maxWidth: 600, margin: '20px auto'
+  }}>
       <CardContent>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h6" component="div" gutterBottom>
@@ -38,11 +40,11 @@ const Post = ({ post }) => {
           { user?.result?._id === creator && 
           
           <>
-            <IconButton onClick={onEdit} edge="end">
+            <IconButton onClick={() => onEdit(_id)} edge="end">
               <EditIcon />
             </IconButton>
 
-            <IconButton onClick={onDelete} edge="end">
+            <IconButton onClick={() => onDelete()} edge="end">
               <DeleteIcon color="error" />
             </IconButton>
           </>}
@@ -93,7 +95,7 @@ const Post = ({ post }) => {
         {/* Post Like Count */}
         <Box display="flex" alignItems="center" mb={2}>
           <IconButton 
-            onClick={postLike} 
+            onClick={() => postLike()} 
             color={likes?.includes(user?.result?._id) ? 'primary' : 'default'} 
             sx={{ marginRight: 1 }}  // Add some spacing between buttons
           >
